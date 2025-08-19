@@ -6,29 +6,26 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
-	url := baseURL + "/location-area"
-	if pageURL != nil {
-		url = *pageURL
-	}
+func (c *Client) ExploreLocation(location string) (LocationArea, error) {
+	url := baseURL + "/location-area/" + location
 
 	var responseData []byte
 	responseData, ok := c.cache.Get(url)
 	if !ok {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return RespShallowLocations{}, err
+			return LocationArea{}, err
 		}
 
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
-			return RespShallowLocations{}, err
+			return LocationArea{}, err
 		}
 		defer resp.Body.Close()
 
 		data, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return RespShallowLocations{}, err
+			return LocationArea{}, err
 		}
 
 		c.cache.Add(url, data)
@@ -36,11 +33,11 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 		responseData = data
 	}
 
-	locationsResp := RespShallowLocations{}
-	err := json.Unmarshal(responseData, &locationsResp)
+	var pokemon LocationArea
+	err := json.Unmarshal(responseData, &pokemon)
 	if err != nil {
-		return RespShallowLocations{}, err
+		return LocationArea{}, err
 	}
 
-	return locationsResp, nil
+	return pokemon, nil
 }
