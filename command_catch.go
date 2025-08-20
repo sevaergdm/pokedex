@@ -24,7 +24,7 @@ func commandCatch(cfg *config, args ...string) error {
 		cfg.caughtPokemon[catchResponse.Name] = catchResponse
 		fmt.Printf("%s was caught!\n", catchResponse.Name)
 	} else {
-		fmt.Printf("%s excaped!\n", catchResponse.Name)
+		fmt.Printf("%s escaped!\n", catchResponse.Name)
 	}
 	return nil
 }
